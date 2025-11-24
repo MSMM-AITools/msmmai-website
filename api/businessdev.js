@@ -39,9 +39,21 @@ console.log('[BusinessDev Init] dist exists:', fs.existsSync(path.join(businessD
 console.log('[BusinessDev Init] js exists:', fs.existsSync(path.join(businessDevPath, 'js')));
 console.log('[BusinessDev Init] assets exists:', fs.existsSync(path.join(businessDevPath, 'assets')));
 
+// List actual files in js directory
+try {
+    const jsFiles = fs.readdirSync(path.join(businessDevPath, 'js'));
+    console.log('[BusinessDev Init] JS files:', jsFiles);
+} catch(e) {
+    console.log('[BusinessDev Init] Error reading js directory:', e.message);
+}
+
 // Log middleware for debugging
 app.use((req, res, next) => {
-    console.log(`[BusinessDev] ${req.method} ${req.url} - Path: ${req.path}`);
+    console.log(`[BusinessDev] ${req.method} ${req.url}`);
+    console.log(`[BusinessDev] Path: ${req.path}`);
+    console.log(`[BusinessDev] OriginalUrl: ${req.originalUrl}`);
+    console.log(`[BusinessDev] BaseUrl: ${req.baseUrl}`);
+    console.log(`[BusinessDev] Query:`, JSON.stringify(req.query));
     next();
 });
 
