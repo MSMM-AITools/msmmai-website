@@ -53,22 +53,6 @@
       "dest": "/api/licenseremindertool.py"
     },
     {
-      "src": "^/businessdev/assets/(.*)",
-      "dest": "/AI Tools/BusinessDev_NewUI/assets/$1"
-    },
-    {
-      "src": "^/businessdev/dist/(.*)",
-      "dest": "/AI Tools/BusinessDev_NewUI/dist/$1"
-    },
-    {
-      "src": "^/businessdev/js/(.*)",
-      "dest": "/AI Tools/BusinessDev_NewUI/js/$1"
-    },
-    {
-      "src": "^/businessdev/pages/(.*)",
-      "dest": "/AI Tools/BusinessDev_NewUI/pages/$1"
-    },
-    {
       "src": "^/businessdev(/.*)?$",
       "dest": "/api/businessdev.js"
     }
