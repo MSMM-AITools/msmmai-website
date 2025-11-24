@@ -32,17 +32,32 @@ const app = express();
 // Serve static files with correct paths
 const businessDevPath = path.resolve(__dirname, '../AI Tools/BusinessDev_NewUI');
 
+// Debug: Log the resolved path and check if directories exist
+const fs = require('fs');
+console.log('[BusinessDev Init] businessDevPath:', businessDevPath);
+console.log('[BusinessDev Init] dist exists:', fs.existsSync(path.join(businessDevPath, 'dist')));
+console.log('[BusinessDev Init] js exists:', fs.existsSync(path.join(businessDevPath, 'js')));
+console.log('[BusinessDev Init] assets exists:', fs.existsSync(path.join(businessDevPath, 'assets')));
+
 // Log middleware for debugging
 app.use((req, res, next) => {
-    console.log(`[BusinessDev] ${req.method} ${req.url}`);
+    console.log(`[BusinessDev] ${req.method} ${req.url} - Path: ${req.path}`);
     next();
 });
 
 // Serve static files - order matters, specific routes first
-app.use('/businessdev/assets', express.static(path.join(businessDevPath, 'assets')));
-app.use('/businessdev/dist', express.static(path.join(businessDevPath, 'dist')));
-app.use('/businessdev/js', express.static(path.join(businessDevPath, 'js')));
-app.use('/businessdev/pages', express.static(path.join(businessDevPath, 'pages')));
+const staticOptions = {
+    maxAge: 0, // No caching for debugging
+    fallthrough: true,
+    setHeaders: (res, path) => {
+        console.log('[BusinessDev Static] Serving:', path);
+    }
+};
+
+app.use('/businessdev/assets', express.static(path.join(businessDevPath, 'assets'), staticOptions));
+app.use('/businessdev/dist', express.static(path.join(businessDevPath, 'dist'), staticOptions));
+app.use('/businessdev/js', express.static(path.join(businessDevPath, 'js'), staticOptions));
+app.use('/businessdev/pages', express.static(path.join(businessDevPath, 'pages'), staticOptions));
 
 // Serve index.html at the root /businessdev path
 app.get('/businessdev', (req, res) => {
