@@ -45,9 +45,16 @@ try:
     from api.index import app as flask_app
     print("[LRT Init] Successfully imported Flask app", file=sys.stderr)
 
-    # Export app for Vercel (Vercel looks for 'app' variable for WSGI apps)
-    app = flask_app
-    print("[LRT Init] App exported successfully", file=sys.stderr)
+    # Wrap Flask app to handle /licenseremindertool prefix
+    from werkzeug.middleware.dispatcher import DispatcherMiddleware
+    from werkzeug.exceptions import NotFound
+
+    # Create a middleware that strips the /licenseremindertool prefix
+    app = DispatcherMiddleware(
+        NotFound(),  # Default app (404)
+        {'/licenseremindertool': flask_app}  # Mount Flask app at /licenseremindertool
+    )
+    print("[LRT Init] App wrapped with DispatcherMiddleware for path handling", file=sys.stderr)
 
 except Exception as e:
     print(f"[LRT ERROR] ERROR IMPORTING FLASK APP: {type(e).__name__}: {str(e)}", file=sys.stderr)
