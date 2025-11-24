@@ -80,6 +80,10 @@ app.get('/businessdev/', (req, res) => {
     console.log('[BusinessDev] Serving index.html');
     res.sendFile(path.join(businessDevPath, 'index.html'));
 });
+app.get('/businessdev/index.html', (req, res) => {
+    console.log('[BusinessDev] Serving index.html');
+    res.sendFile(path.join(businessDevPath, 'index.html'));
+});
 
 // Mount the API routes under /businessdev - this should come LAST
 app.use('/businessdev', serverApp);
