@@ -42,3 +42,4 @@ env/
 # Temporary files
 *.tmp
 *.bak
+vercel_logs/
