@@ -1,0 +1,79 @@
+.
+./FILES_SUMMARY.md
+./index.html
+./.DS_Store
+./vercel.json
+./requirements.txt
+./QUICKSTART.md
+./.claude
+./.claude/settings.local.json
+./README.md
+./DIRECTORY_STRUCTURE.txt
+./DEPLOYMENT_GUIDE.md
+./.gitignore
+./package.json
+./api
+./api/businessdev.js
+./api/cron.py
+./api/licenseremindertool.py
+./AI Tools
+./AI Tools/LicenseReminderTool-main
+./AI Tools/LicenseReminderTool-main/license_reminder_system.py
+./AI Tools/LicenseReminderTool-main/.DS_Store
+./AI Tools/LicenseReminderTool-main/LICENSE
+./AI Tools/LicenseReminderTool-main/vercel.json
+./AI Tools/LicenseReminderTool-main/requirements.txt
+./AI Tools/LicenseReminderTool-main/license_reminders.log
+./AI Tools/LicenseReminderTool-main/web_dashboard.py
+./AI Tools/LicenseReminderTool-main/config_template.env
+./AI Tools/LicenseReminderTool-main/oracle_setup.sql
+./AI Tools/LicenseReminderTool-main/__pycache__
+./AI Tools/LicenseReminderTool-main/oracle_test.py
+./AI Tools/LicenseReminderTool-main/README.md
+./AI Tools/LicenseReminderTool-main/oracle_working_connection.py
+./AI Tools/LicenseReminderTool-main/setup.py
+./AI Tools/LicenseReminderTool-main/.gitignore
+./AI Tools/LicenseReminderTool-main/DEPLOYMENT.md
+./AI Tools/LicenseReminderTool-main/generate_sql_inserts.py
+./AI Tools/LicenseReminderTool-main/.env
+./AI Tools/LicenseReminderTool-main/license_reminder_emailjs.py
+./AI Tools/LicenseReminderTool-main/static
+./AI Tools/LicenseReminderTool-main/run_oracle_setup.py
+./AI Tools/LicenseReminderTool-main/.gitattributes
+./AI Tools/LicenseReminderTool-main/VERCEL_GUIDE.md
+./AI Tools/LicenseReminderTool-main/api
+./AI Tools/LicenseReminderTool-main/templates
+./AI Tools/LicenseReminderTool-main/license_reminder_oracle.py
+./AI Tools/LicenseReminderTool-main/.env.example
+./AI Tools/LicenseReminderTool-main/license_reminders_oracle.log
+./AI Tools/LicenseReminderTool-main/web_dashboard_oracle.py
+./AI Tools/LicenseReminderTool-main/MIGRATION_NOTES.md
+./AI Tools/LicenseReminderTool-main/CLAUDE.md
+./AI Tools/LicenseReminderTool-main/web_dashboard_oracle_old.py
+./AI Tools/LicenseReminderTool-main/SETUP_GUIDE.md
+./AI Tools/BusinessDev_NewUI
+./AI Tools/BusinessDev_NewUI/LICENSE_CALENDAR_FEATURE.md
+./AI Tools/BusinessDev_NewUI/index.html
+./AI Tools/BusinessDev_NewUI/tailwind.config.js
+./AI Tools/BusinessDev_NewUI/dist
+./AI Tools/BusinessDev_NewUI/js
+./AI Tools/BusinessDev_NewUI/node_modules
+./AI Tools/BusinessDev_NewUI/.claude
+./AI Tools/BusinessDev_NewUI/server
+./AI Tools/BusinessDev_NewUI/tailwind_templates
+./AI Tools/BusinessDev_NewUI/README.md
+./AI Tools/BusinessDev_NewUI/.gitignore
+./AI Tools/BusinessDev_NewUI/package-lock.json
+./AI Tools/BusinessDev_NewUI/package.json
+./AI Tools/BusinessDev_NewUI/.env
+./AI Tools/BusinessDev_NewUI/.gitattributes
+./AI Tools/BusinessDev_NewUI/LICENSE_MANAGER_MENU.md
+./AI Tools/BusinessDev_NewUI/db
+./AI Tools/BusinessDev_NewUI/.git
+./AI Tools/BusinessDev_NewUI/TIMEZONE_FIX.md
+./AI Tools/BusinessDev_NewUI/assets
+./AI Tools/BusinessDev_NewUI/pages
+./AI Tools/BusinessDev_NewUI/RICH_TEXT_EDITOR.md
+./AI Tools/BusinessDev_NewUI/EVENTS_TABLE_SETUP.md
+./AI Tools/BusinessDev_NewUI/src
+./.env.example

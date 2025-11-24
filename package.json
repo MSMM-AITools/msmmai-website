@@ -1,0 +1,24 @@
+{
+  "name": "msmm-ai-tools",
+  "version": "1.0.0",
+  "description": "MSMM Engineering AI Tools Suite",
+  "main": "api/businessdev.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Build complete'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": ["ai", "tools", "msmm", "engineering"],
+  "author": "MSMM Engineering",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "cors": "^2.8.5",
+    "body-parser": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "oracledb": "^6.10.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.0"
+  }
+}

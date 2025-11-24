@@ -1,0 +1,97 @@
+{
+  "version": 2,
+  "name": "msmm-ai-tools",
+  "builds": [
+    {
+      "src": "api/licenseremindertool.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "AI Tools/LicenseReminderTool-main/**",
+          "AI Tools/LicenseReminderTool-main/templates/**",
+          "AI Tools/LicenseReminderTool-main/static/**"
+        ]
+      }
+    },
+    {
+      "src": "api/cron.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "AI Tools/LicenseReminderTool-main/**"
+        ]
+      }
+    },
+    {
+      "src": "api/businessdev.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "AI Tools/BusinessDev_NewUI/**"
+        ]
+      }
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "^/$",
+      "dest": "/index.html"
+    },
+    {
+      "src": "^/licenseremindertool/static/(.*)",
+      "dest": "/AI Tools/LicenseReminderTool-main/static/$1"
+    },
+    {
+      "src": "^/licenseremindertool/api/cron/check-reminders",
+      "dest": "/api/cron.py"
+    },
+    {
+      "src": "^/licenseremindertool(/.*)?$",
+      "dest": "/api/licenseremindertool.py"
+    },
+    {
+      "src": "^/businessdev/assets/(.*)",
+      "dest": "/AI Tools/BusinessDev_NewUI/assets/$1"
+    },
+    {
+      "src": "^/businessdev/dist/(.*)",
+      "dest": "/AI Tools/BusinessDev_NewUI/dist/$1"
+    },
+    {
+      "src": "^/businessdev/js/(.*)",
+      "dest": "/AI Tools/BusinessDev_NewUI/js/$1"
+    },
+    {
+      "src": "^/businessdev/pages/(.*)",
+      "dest": "/AI Tools/BusinessDev_NewUI/pages/$1"
+    },
+    {
+      "src": "^/businessdev(/.*)?$",
+      "dest": "/api/businessdev.js"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/licenseremindertool/api/cron/check-reminders",
+      "schedule": "0 9 * * *"
+    }
+  ],
+  "env": {
+    "ORACLE_HOST": "@oracle_host",
+    "ORACLE_PORT": "@oracle_port",
+    "ORACLE_SERVICE_NAME": "@oracle_service_name",
+    "ORACLE_USER": "@oracle_user",
+    "ORACLE_PASSWORD": "@oracle_password",
+    "ORACLE_SCHEMA": "@oracle_schema",
+    "SMTP_SERVER": "@smtp_server",
+    "SMTP_PORT": "@smtp_port",
+    "SMTP_USERNAME": "@smtp_username",
+    "SMTP_PASSWORD": "@smtp_password",
+    "FLASK_SECRET_KEY": "@flask_secret_key",
+    "CRON_SECRET": "@cron_secret"
+  }
+}
