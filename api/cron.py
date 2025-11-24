@@ -7,21 +7,27 @@ import sys
 import os
 from pathlib import Path
 
-# Add the LicenseReminderTool directory to Python path
+# Add the LicenseReminderTool directory to Python path FIRST
 lrt_path = Path(__file__).parent.parent / 'AI Tools' / 'LicenseReminderTool-main'
 sys.path.insert(0, str(lrt_path))
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+# Change working directory to ensure relative paths work
+original_cwd = os.getcwd()
+os.chdir(str(lrt_path))
 
-# Import the Flask app from index.py instead (to avoid circular imports)
-# The cron logic is defined in LicenseReminderTool-main/api/cron.py
-# but it uses the app from index.py
-import importlib.util
-spec = importlib.util.spec_from_file_location("lrt_cron", lrt_path / 'api' / 'cron.py')
-lrt_cron = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(lrt_cron)
+try:
+    # Load environment variables
+    from dotenv import load_dotenv
+    load_dotenv()
 
-# Export the handler (which is the Flask app)
-handler = lrt_cron.handler
+    # Import the cron module which includes the handler
+    # The cron logic is defined in LicenseReminderTool-main/api/cron.py
+    from api.cron import handler
+
+    # Export the handler (which is the Flask app with cron routes)
+    # This is already defined, just re-export it
+    handler = handler
+
+finally:
+    # Restore original directory
+    os.chdir(original_cwd)

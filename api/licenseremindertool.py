@@ -7,20 +7,27 @@ import sys
 import os
 from pathlib import Path
 
-# Add the LicenseReminderTool directory to Python path
+# Add the LicenseReminderTool directory to Python path FIRST
 lrt_path = Path(__file__).parent.parent / 'AI Tools' / 'LicenseReminderTool-main'
 sys.path.insert(0, str(lrt_path))
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
+# Change working directory to ensure relative paths work
+original_cwd = os.getcwd()
+os.chdir(str(lrt_path))
 
-# Import the Flask app from the LicenseReminderTool using importlib to avoid naming conflicts
-import importlib.util
-spec = importlib.util.spec_from_file_location("lrt_index", lrt_path / 'api' / 'index.py')
-lrt_index = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(lrt_index)
+try:
+    # Load environment variables
+    from dotenv import load_dotenv
+    load_dotenv()
 
-# The app is already configured properly, we just need to export it
-# Vercel will handle the routing based on vercel.json configuration
-handler = lrt_index.app
+    # Import the Flask app from the api.index module
+    # This should now work because we've set up sys.path and changed directory
+    from api.index import app
+
+    # The app is already configured properly, we just need to export it
+    # Vercel will handle the routing based on vercel.json configuration
+    handler = app
+
+finally:
+    # Restore original directory (though in serverless this doesn't matter much)
+    os.chdir(original_cwd)
