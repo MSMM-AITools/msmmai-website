@@ -15,7 +15,11 @@
   },
   "rewrites": [
     {
-      "source": "/businessdev/:path*",
+      "source": "/businessdev/(.*)",
+      "destination": "/api/businessdev"
+    },
+    {
+      "source": "/businessdev",
       "destination": "/api/businessdev"
     },
     {
@@ -23,7 +27,11 @@
       "destination": "/api/cron"
     },
     {
-      "source": "/licenseremindertool/:path*",
+      "source": "/licenseremindertool/(.*)",
+      "destination": "/api/licenseremindertool"
+    },
+    {
+      "source": "/licenseremindertool",
       "destination": "/api/licenseremindertool"
     }
   ],
