@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "msmm-ai-tools",
   "builds": [
     {
       "src": "api/licenseremindertool.py",
