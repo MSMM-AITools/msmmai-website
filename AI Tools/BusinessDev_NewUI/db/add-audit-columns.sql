@@ -1,0 +1,57 @@
+-- Add audit trail columns to PROPOSALS table
+-- Run this script to add created_by, modified_by, created_date, modified_date columns
+
+-- Add CREATED_BY column (username or user ID)
+ALTER TABLE PROPOSALS ADD CREATED_BY VARCHAR2(100);
+
+-- Add MODIFIED_BY column (username or user ID)
+ALTER TABLE PROPOSALS ADD MODIFIED_BY VARCHAR2(100);
+
+-- Add CREATED_DATE column
+ALTER TABLE PROPOSALS ADD CREATED_DATE DATE DEFAULT SYSDATE;
+
+-- Add MODIFIED_DATE column
+ALTER TABLE PROPOSALS ADD MODIFIED_DATE DATE DEFAULT SYSDATE;
+
+-- Add comments to document the columns
+COMMENT ON COLUMN PROPOSALS.CREATED_BY IS 'Username of the user who created this record';
+COMMENT ON COLUMN PROPOSALS.MODIFIED_BY IS 'Username of the user who last modified this record';
+COMMENT ON COLUMN PROPOSALS.CREATED_DATE IS 'Date and time when this record was created';
+COMMENT ON COLUMN PROPOSALS.MODIFIED_DATE IS 'Date and time when this record was last modified';
+
+-- Create trigger to automatically update MODIFIED_DATE on update
+CREATE OR REPLACE TRIGGER TRG_PROPOSALS_MODIFIED_DATE
+BEFORE UPDATE ON PROPOSALS
+FOR EACH ROW
+BEGIN
+    :NEW.MODIFIED_DATE := SYSDATE;
+END;
+/
+
+-- Add audit columns to ORGANIZATION table
+ALTER TABLE ORGANIZATION ADD CREATED_BY VARCHAR2(100);
+ALTER TABLE ORGANIZATION ADD MODIFIED_BY VARCHAR2(100);
+ALTER TABLE ORGANIZATION ADD CREATED_DATE DATE DEFAULT SYSDATE;
+ALTER TABLE ORGANIZATION ADD MODIFIED_DATE DATE DEFAULT SYSDATE;
+
+COMMENT ON COLUMN ORGANIZATION.CREATED_BY IS 'Username of the user who created this record';
+COMMENT ON COLUMN ORGANIZATION.MODIFIED_BY IS 'Username of the user who last modified this record';
+COMMENT ON COLUMN ORGANIZATION.CREATED_DATE IS 'Date and time when this record was created';
+COMMENT ON COLUMN ORGANIZATION.MODIFIED_DATE IS 'Date and time when this record was last modified';
+
+CREATE OR REPLACE TRIGGER TRG_ORGANIZATION_MODIFIED_DATE
+BEFORE UPDATE ON ORGANIZATION
+FOR EACH ROW
+BEGIN
+    :NEW.MODIFIED_DATE := SYSDATE;
+END;
+/
+
+-- Note: EVENTS table already has CREATED_DATE and MODIFIED_DATE
+-- Add user tracking columns to EVENTS table
+ALTER TABLE EVENTS ADD CREATED_BY VARCHAR2(100);
+ALTER TABLE EVENTS ADD MODIFIED_BY VARCHAR2(100);
+
+COMMENT ON COLUMN EVENTS.CREATED_BY IS 'Username of the user who created this event';
+COMMENT ON COLUMN EVENTS.MODIFIED_BY IS 'Username of the user who last modified this event';
+

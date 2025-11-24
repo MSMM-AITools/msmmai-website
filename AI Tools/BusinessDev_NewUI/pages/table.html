@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Table - BusinessDev</title>
+    <link href="../dist/output.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/button-utils.js"></script>
+    <script src="../js/confirm-dialog.js"></script>
+    <script src="../js/form-config.js"></script>
+</head>
+<body class="h-full">
+    <!-- Navbar -->
+    <nav class="relative bg-white shadow-sm">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 justify-between">
+                <!-- Mobile menu button -->
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <button type="button" id="mobile-menu-btn" class="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-indigo-600 focus:outline-none focus:ring-inset">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-open-icon" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg id="menu-close-icon" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Logo and navigation -->
+                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex shrink-0 items-center">
+                        <img class="h-10 w-auto" src="/assets/images/msmm-logo.png" alt="MSMM Engineering">
+                    </div>
+                    <!-- Desktop navigation -->
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../index.html" class="inline-flex items-center border-b-2 border-indigo-600 px-1 pt-1 text-sm font-medium text-gray-900">
+                            🏠 Home Page
+                        </a>
+                        <a href="calendar.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            📅 Calendar
+                        </a>
+                        <a href="organizations.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            🏢 Organizations
+                        </a>
+                        <a href="https://license-tool-pi.vercel.app/" target="_blank" rel="noopener noreferrer" data-license-count class="inline-flex items-center gap-1 border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            🔐 License Manager
+                            <span class="license-count hidden text-amber-600 font-semibold"></span>
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Profile section -->
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <div class="relative ml-3">
+                        <button type="button" id="profile-menu-btn" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <span class="sr-only">Open user menu</span>
+                            <img class="h-8 w-8 rounded-full bg-gray-100 outline outline-1 -outline-offset-1 outline-black/5" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                        </button>
+
+                        <!-- Profile dropdown -->
+                        <div id="profile-dropdown" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="hidden sm:hidden">
+            <div class="space-y-1 pt-2 pb-4">
+                <a href="../index.html" class="block border-l-4 border-indigo-600 bg-indigo-50 py-2 pr-4 pl-3 text-base font-medium text-indigo-700">🏠 Home Page</a>
+                <a href="calendar.html" class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">📅 Calendar</a>
+                <a href="organizations.html" class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">🏢 Organizations</a>
+                <a href="https://license-tool-pi.vercel.app/" target="_blank" rel="noopener noreferrer" data-license-count class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">
+                    🔐 License Manager <span class="license-count hidden text-amber-600 font-semibold"></span> ↗
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="py-10">
+        <div class="px-6 sm:px-10 lg:px-16">
+            <!-- Table Header with Breadcrumb -->
+            <div class="sm:flex sm:items-center sm:justify-between mb-6">
+                <div class="sm:flex-auto">
+                    <!-- Title and Breadcrumb on same line -->
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-base font-semibold text-gray-900" id="table-title">Loading...</h1>
+                        <span class="text-gray-300">|</span>
+                        <a href="../index.html" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+                            <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            </svg>
+                            Back to Home Page
+                        </a>
+                    </div>
+                    <p class="text-sm text-gray-700" id="table-description">Please wait while we load the data...</p>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <button
+                        type="button"
+                        id="create-new-btn"
+                        class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Create New
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="mt-8 text-center">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p class="mt-4 text-sm text-gray-600">Loading data...</p>
+            </div>
+
+            <!-- Error Message -->
+            <div id="error-message" class="mt-8 hidden">
+                <div class="rounded-md bg-red-50 p-4">
+                    <div class="flex">
+                        <div class="ml-3">
+                            <h3 class="text-sm font-medium text-red-800">Error loading data</h3>
+                            <div class="mt-2 text-sm text-red-700" id="error-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div id="table-container" class="mt-8 hidden">
+                <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+                    <!-- Table Header with Search -->
+                    <div class="border-b border-gray-200 bg-white px-4 py-5 sm:px-6 rounded-t-xl">
+                        <div class="flex flex-wrap items-start justify-between gap-4">
+                            <!-- Left side: Title, filters, and count -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base font-semibold leading-6 text-gray-900" id="table-subtitle">Data View</h3>
+                                <div class="mt-2 flex flex-wrap gap-2" id="active-filters"></div>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Showing <span class="font-medium text-gray-900" id="row-count">0</span> results
+                                </p>
+                            </div>
+                            <!-- Right side: Search and Edit Columns -->
+                            <div class="flex gap-3 items-center">
+                                <input
+                                    type="text"
+                                    id="search-input"
+                                    placeholder="Search..."
+                                    class="block w-80 rounded-md border-0 py-2 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                />
+                                <button
+                                    type="button"
+                                    id="export-excel-btn"
+                                    class="inline-flex items-center rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-400 whitespace-nowrap"
+                                >
+                                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                    </svg>
+                                    Export to Excel
+                                </button>
+                                <button
+                                    type="button"
+                                    id="edit-columns-btn"
+                                    class="inline-flex items-center rounded-md bg-blue-400 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-300 whitespace-nowrap"
+                                >
+                                    <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                    </svg>
+                                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                                    </svg>
+                                    Edit Columns
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Scroll Bar -->
+                    <div id="top-scroll" class="overflow-x-auto border-b border-gray-200">
+                        <div id="top-scroll-content" style="height: 1px;"></div>
+                    </div>
+
+                    <!-- Table Scroll Container -->
+                    <div id="bottom-scroll" class="overflow-x-auto">
+                        <div class="inline-block min-w-full align-middle">
+                            <table class="min-w-full divide-y divide-gray-300" style="table-layout: auto;">
+                                <thead class="bg-gray-50">
+                                    <tr id="table-header">
+                                        <!-- Headers will be inserted here -->
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white" id="table-body">
+                                    <!-- Rows will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit/Create Modal -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4" id="edit-modal-title">Edit Entry</h3>
+
+                    <form id="edit-form" class="grid grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto">
+                        <!-- Form fields will be inserted here dynamically -->
+                    </form>
+                </div>
+
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-3 sm:gap-3 sm:grid-flow-row-dense">
+                    <button
+                        type="button"
+                        id="save-entry-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    >
+                        Save
+                    </button>
+                    <button
+                        type="button"
+                        id="delete-entry-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 sm:col-start-3 hidden"
+                    >
+                        Delete
+                    </button>
+                    <button
+                        type="button"
+                        id="cancel-edit-btn"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Organization Modal -->
+    <div id="add-org-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Add New Organization</h3>
+
+                    <form id="add-org-form" class="space-y-4">
+                        <div>
+                            <label for="org-full-name" class="block text-sm font-medium text-gray-900 mb-1">
+                                Full Name <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="org-full-name"
+                                name="ORG_FULL_NAME"
+                                required
+                                class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="org-abbreviation" class="block text-sm font-medium text-gray-900 mb-1">
+                                Abbreviation
+                            </label>
+                            <input
+                                type="text"
+                                id="org-abbreviation"
+                                name="ORG_ABBREVIATION"
+                                class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="org-type" class="block text-sm font-medium text-gray-900 mb-1">
+                                Type <span class="text-red-500">*</span>
+                            </label>
+                            <select
+                                id="org-type"
+                                name="ORG_TYPE"
+                                required
+                                class="block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"
+                            >
+                                <option value="">-- Select Type --</option>
+                                <option value="City">City</option>
+                                <option value="County">County</option>
+                                <option value="Federal">Federal</option>
+                                <option value="Local">Local</option>
+                                <option value="Parish">Parish</option>
+                                <option value="Private Entity">Private Entity</option>
+                                <option value="Regional">Regional</option>
+                                <option value="State">State</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3">
+                    <button
+                        type="button"
+                        id="save-org-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Save Organization
+                    </button>
+                    <button
+                        type="button"
+                        id="cancel-org-btn"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Column Editor Modal -->
+    <div id="column-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full sm:p-6">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-lg font-medium leading-6 text-gray-900">Edit Columns</h3>
+                            <p class="text-sm text-gray-500 mt-1">Select which columns to display in the table</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button
+                                type="button"
+                                id="select-all-columns-btn"
+                                class="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                            >
+                                Select All
+                            </button>
+                            <button
+                                type="button"
+                                id="deselect-all-columns-btn"
+                                class="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                            >
+                                Deselect All
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="column-list" class="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+                        <!-- Column checkboxes will be inserted here in 2x2 grid -->
+                    </div>
+                </div>
+
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense">
+                    <button
+                        type="button"
+                        id="apply-columns-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    >
+                        Apply
+                    </button>
+                    <button
+                        type="button"
+                        id="cancel-columns-btn"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/table.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuOpenIcon = document.getElementById('menu-open-icon');
+        const menuCloseIcon = document.getElementById('menu-close-icon');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+
+            if (isHidden) {
+                mobileMenu.classList.remove('hidden');
+                menuOpenIcon.classList.add('hidden');
+                menuCloseIcon.classList.remove('hidden');
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuOpenIcon.classList.remove('hidden');
+                menuCloseIcon.classList.add('hidden');
+            }
+        });
+
+        // Profile dropdown toggle
+        const profileMenuBtn = document.getElementById('profile-menu-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+
+        profileMenuBtn.addEventListener('click', () => {
+            profileDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!profileMenuBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                profileDropdown.classList.add('hidden');
+            }
+        });
+    </script>
+    <script src="../js/license-count.js"></script>
+</body>
+</html>

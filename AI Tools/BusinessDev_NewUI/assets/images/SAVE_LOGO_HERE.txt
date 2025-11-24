@@ -1,0 +1,16 @@
+INSTRUCTIONS:
+=============
+
+Please save the MSMM Engineering logo image as:
+  msmm-logo.png
+
+In this directory:
+  /Users/philipmeric/Desktop/WORK CODEBASE/BusinessDev/assets/images/
+
+The logo should be the MSMM Engineering LLC logo with the red circle and bridge design.
+
+Once saved, the logo will be automatically served by the Node.js API server 
+and will be accessible to anyone running the application from anywhere.
+
+The image is served at: http://localhost:3001/assets/images/msmm-logo.png
+

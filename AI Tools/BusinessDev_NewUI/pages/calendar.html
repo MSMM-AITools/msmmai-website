@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar - BusinessDev</title>
+    <link href="../dist/output.css" rel="stylesheet">
+    <script src="../js/config.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/button-utils.js"></script>
+    <script src="../js/confirm-dialog.js"></script>
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <!-- Quill Rich Text Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    <style>
+        /* Style the calendar view buttons (Month, Week, Day, List) to light green */
+        .fc .fc-button-primary {
+            background-color: #10b981 !important;
+            border-color: #10b981 !important;
+            color: white !important;
+        }
+        .fc .fc-button-primary:hover {
+            background-color: #059669 !important;
+            border-color: #059669 !important;
+        }
+        .fc .fc-button-primary:not(:disabled):active,
+        .fc .fc-button-primary:not(:disabled).fc-button-active {
+            background-color: #047857 !important;
+            border-color: #047857 !important;
+        }
+        .fc .fc-button-primary:focus {
+            box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.5) !important;
+        }
+
+        /* Calendar uses default FullCalendar sizing */
+        
+        /* Make day boxes 30% smaller total (10% + 10% + 10%) */
+        .fc .fc-daygrid-day-frame {
+            min-height: 87px !important; /* 97px * 0.9 = 87px */
+        }
+
+        /* Quill Editor Styling */
+        .ql-toolbar {
+            border-top-left-radius: 0.375rem;
+            border-top-right-radius: 0.375rem;
+            background: #f9fafb;
+            border: 1px solid #d1d5db !important;
+        }
+        
+        .ql-container {
+            border-bottom-left-radius: 0.375rem;
+            border-bottom-right-radius: 0.375rem;
+            border: 1px solid #d1d5db !important;
+            border-top: none !important;
+            font-size: 0.875rem;
+        }
+        
+        .ql-editor {
+            min-height: 200px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .ql-editor.ql-blank::before {
+            font-style: normal;
+            color: #9ca3af;
+        }
+
+        /* License Event Tooltip */
+        .fc-event.license-event {
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .license-tooltip {
+            position: absolute;
+            z-index: 10000;
+            background: white;
+            border: 2px solid #F59E0B;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-width: 400px;
+            min-width: 250px;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            color: #374151;
+            pointer-events: none;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+        
+        .license-tooltip-title {
+            font-weight: 600;
+            color: #F59E0B;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="h-full">
+    <!-- Navbar -->
+    <nav class="relative bg-white shadow-sm">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 justify-between">
+                <!-- Mobile menu button -->
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <button type="button" id="mobile-menu-btn" class="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:ring-2 focus:ring-indigo-600 focus:outline-none focus:ring-inset">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-open-icon" class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg id="menu-close-icon" class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Logo and navigation -->
+                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="flex shrink-0 items-center">
+                        <img class="h-10 w-auto" src="/assets/images/msmm-logo.png" alt="MSMM Engineering">
+                    </div>
+                    <!-- Desktop navigation -->
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="../index.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            🏠 Home Page
+                        </a>
+                        <a href="calendar.html" class="inline-flex items-center border-b-2 border-indigo-600 px-1 pt-1 text-sm font-medium text-gray-900">
+                            📅 Calendar
+                        </a>
+                        <a href="organizations.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            🏢 Organizations
+                        </a>
+                        <a href="https://license-tool-pi.vercel.app/" target="_blank" rel="noopener noreferrer" data-license-count class="inline-flex items-center gap-1 border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                            🔐 License Manager
+                            <span class="license-count hidden text-amber-600 font-semibold"></span>
+                            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Profile section -->
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                    <div class="relative ml-3">
+                        <button type="button" id="profile-menu-btn" class="relative flex rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            <span class="sr-only">Open user menu</span>
+                            <img class="h-8 w-8 rounded-full bg-gray-100 outline outline-1 -outline-offset-1 outline-black/5" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                        </button>
+
+                        <!-- Profile dropdown -->
+                        <div id="profile-dropdown" class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your profile</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu panel -->
+        <div id="mobile-menu" class="hidden sm:hidden">
+            <div class="space-y-1 pt-2 pb-4">
+                <a href="../index.html" class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">🏠 Home Page</a>
+                <a href="calendar.html" class="block border-l-4 border-indigo-600 bg-indigo-50 py-2 pr-4 pl-3 text-base font-medium text-indigo-700">📅 Calendar</a>
+                <a href="organizations.html" class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">🏢 Organizations</a>
+                <a href="https://license-tool-pi.vercel.app/" target="_blank" rel="noopener noreferrer" data-license-count class="block border-l-4 border-transparent py-2 pr-4 pl-3 text-base font-medium text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700">
+                    🔐 License Manager <span class="license-count hidden text-amber-600 font-semibold"></span> ↗
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="py-10">
+        <div class="px-6 sm:px-10 lg:px-16">
+            <!-- Calendar Header -->
+            <div class="sm:flex sm:items-center sm:justify-between mb-6">
+                <div class="sm:flex-auto">
+                    <!-- Title and Breadcrumb on same line -->
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-base font-semibold text-gray-900">Event Calendar</h1>
+                        <span class="text-gray-300">|</span>
+                        <a href="../index.html" class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+                            <svg class="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            </svg>
+                            Back to Home Page
+                        </a>
+                    </div>
+                    <p class="text-sm text-gray-700">Manage and track your business development events</p>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none flex gap-2">
+                    <button
+                        type="button"
+                        id="toggle-licenses-btn"
+                        class="inline-flex items-center rounded-md bg-amber-500 px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-amber-600 hover:bg-amber-400"
+                        title="Show/Hide License Expirations"
+                    >
+                        <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                        </svg>
+                        <span id="licenses-toggle-text">Hide Licenses</span>
+                    </button>
+                    <button
+                        type="button"
+                        id="create-event-btn"
+                        class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add Event
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar Container -->
+            <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl p-6">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Event Modal -->
+    <div id="event-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-4 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full sm:p-6">
+                <div>
+                    <h3 class="text-lg font-medium leading-6 text-gray-900 mb-3" id="event-modal-title">Add Event</h3>
+
+                    <form id="event-form" class="space-y-3">
+                        <div>
+                            <label for="event-title" class="block text-sm font-medium text-gray-900">Title <span class="text-red-600">*</span></label>
+                            <input type="text" id="event-title" required class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                        </div>
+
+                        <div>
+                            <label for="event-description" class="block text-sm font-medium text-gray-900">Description</label>
+                            <textarea id="event-description" rows="2" class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="event-start" class="block text-sm font-medium text-gray-900">Start Date/Time <span class="text-red-600">*</span></label>
+                                <input type="datetime-local" id="event-start" required class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                            </div>
+
+                            <div>
+                                <label for="event-end" class="block text-sm font-medium text-gray-900">End Date/Time <span class="text-red-600">*</span></label>
+                                <input type="datetime-local" id="event-end" required class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="event-location" class="block text-sm font-medium text-gray-900">Location</label>
+                            <input type="text" id="event-location" class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                        </div>
+
+                        <div>
+                            <label for="event-color" class="block text-sm font-medium text-gray-900">Color</label>
+                            <select id="event-color" class="mt-1 block w-full rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm">
+                                <option value="#3B82F6">Blue</option>
+                                <option value="#10B981">Green</option>
+                                <option value="#F59E0B">Orange</option>
+                                <option value="#EF4444">Red</option>
+                                <option value="#8B5CF6">Purple</option>
+                                <option value="#EC4899">Pink</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center">
+                            <input type="checkbox" id="event-all-day" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                            <label for="event-all-day" class="ml-2 block text-sm text-gray-900">All day event</label>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-900 mb-1">Meeting Notes / Minutes</label>
+                            <div id="event-notes-editor" class="bg-white" style="height: 250px;"></div>
+                            <textarea id="event-notes" class="hidden"></textarea>
+                            <p class="mt-1 text-xs text-gray-500">Use the toolbar to format text, add lists, bold, italics, etc.</p>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-5 sm:mt-6 sm:grid sm:grid-cols-3 sm:gap-3 sm:grid-flow-row-dense">
+                    <button
+                        type="button"
+                        id="save-event-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                    >
+                        Save
+                    </button>
+                    <button
+                        type="button"
+                        id="delete-event-btn"
+                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 sm:col-start-3 hidden"
+                    >
+                        Delete
+                    </button>
+                    <button
+                        type="button"
+                        id="cancel-event-btn"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/calendar.js"></script>
+    <script src="../js/license-count.js"></script>
+</body>
+</html>
