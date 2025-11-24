@@ -10,6 +10,7 @@ print("[LRT TEST] Starting minimal test handler", file=sys.stderr)
 
 from flask import Flask, jsonify
 
+# Vercel expects 'app' variable for WSGI applications (not 'handler')
 app = Flask(__name__)
 
 @app.route('/')
@@ -23,5 +24,3 @@ def test_handler(path=''):
         'cwd': os.getcwd(),
         'env_oracle_host': os.getenv('ORACLE_HOST', 'NOT_SET')[:10] + '***'
     })
-
-handler = app

@@ -42,12 +42,12 @@ try:
 
     # Import the Flask app
     print("[LRT Init] Attempting to import api.index...", file=sys.stderr)
-    from api.index import app
+    from api.index import app as flask_app
     print("[LRT Init] Successfully imported Flask app", file=sys.stderr)
 
-    # Export handler for Vercel
-    handler = app
-    print("[LRT Init] Handler exported successfully", file=sys.stderr)
+    # Export app for Vercel (Vercel looks for 'app' variable for WSGI apps)
+    app = flask_app
+    print("[LRT Init] App exported successfully", file=sys.stderr)
 
 except Exception as e:
     print(f"[LRT ERROR] ERROR IMPORTING FLASK APP: {type(e).__name__}: {str(e)}", file=sys.stderr)
