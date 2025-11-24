@@ -1,60 +1,28 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/licenseremindertool.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "AI Tools/LicenseReminderTool-main/**",
-          "AI Tools/LicenseReminderTool-main/templates/**",
-          "AI Tools/LicenseReminderTool-main/static/**"
-        ]
-      }
+  "functions": {
+    "api/businessdev.js": {
+      "includeFiles": "AI Tools/BusinessDev_NewUI/**"
     },
-    {
-      "src": "api/cron.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": [
-          "AI Tools/LicenseReminderTool-main/**"
-        ]
-      }
+    "api/licenseremindertool.py": {
+      "includeFiles": "AI Tools/LicenseReminderTool-main/**"
     },
-    {
-      "src": "api/businessdev.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "AI Tools/BusinessDev_NewUI/**"
-        ]
-      }
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
+    "api/cron.py": {
+      "includeFiles": "AI Tools/LicenseReminderTool-main/**"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "^/$",
-      "dest": "/index.html"
+      "source": "/businessdev/:path*",
+      "destination": "/api/businessdev"
     },
     {
-      "src": "^/licenseremindertool/static/(.*)",
-      "dest": "/AI Tools/LicenseReminderTool-main/static/$1"
+      "source": "/licenseremindertool/api/cron/check-reminders",
+      "destination": "/api/cron"
     },
     {
-      "src": "^/licenseremindertool/api/cron/check-reminders",
-      "dest": "/api/cron.py"
-    },
-    {
-      "src": "^/licenseremindertool(/.*)?$",
-      "dest": "/api/licenseremindertool.py"
-    },
-    {
-      "src": "^/businessdev(/.*)?$",
-      "dest": "/api/businessdev.js"
+      "source": "/licenseremindertool/:path*",
+      "destination": "/api/licenseremindertool"
     }
   ],
   "crons": [

@@ -72,5 +72,12 @@ app.get('/businessdev/', (req, res) => {
 // Mount the API routes under /businessdev - this should come LAST
 app.use('/businessdev', serverApp);
 
+// Catch-all 404 handler for debugging
+app.use((req, res) => {
+    console.log('[BusinessDev 404] No handler found for:', req.method, req.url, req.path);
+    console.log('[BusinessDev 404] Headers:', JSON.stringify(req.headers));
+    res.status(404).send(`Not Found: ${req.url}`);
+});
+
 // Export for Vercel serverless
 module.exports = app;
