@@ -1,5 +1,5 @@
--- SQL script to initialize the MSMMAI_USERS table
--- This script creates the users table and inserts the default admin user
+-- SQL script to initialize the authentication tables
+-- This script creates the users and sessions tables and inserts the default admin user
 
 -- Create the MSMMAI_USERS table
 CREATE TABLE "MSMM DASHBOARD".MSMMAI_USERS (
@@ -8,6 +8,16 @@ CREATE TABLE "MSMM DASHBOARD".MSMMAI_USERS (
     PASSWORD_HASH VARCHAR2(64) NOT NULL,
     CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     LAST_LOGIN TIMESTAMP
+);
+
+-- Create the USER_SESSIONS table for database-backed sessions
+CREATE TABLE "MSMM DASHBOARD".USER_SESSIONS (
+    SESSION_ID VARCHAR2(100) PRIMARY KEY,
+    USER_ID NUMBER NOT NULL,
+    USERNAME VARCHAR2(50) NOT NULL,
+    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    EXPIRES_AT TIMESTAMP NOT NULL,
+    FOREIGN KEY (USER_ID) REFERENCES "MSMM DASHBOARD".MSMMAI_USERS(USER_ID)
 );
 
 -- Insert default admin user
@@ -19,5 +29,6 @@ VALUES ('admin', '4fe0a87016b0046c2eeb8644ecda3586fcc8ca7a9017505ae76d8a314a1e75
 
 COMMIT;
 
--- Verify the table was created and user was inserted
+-- Verify the tables were created and user was inserted
 SELECT * FROM "MSMM DASHBOARD".MSMMAI_USERS;
+SELECT COUNT(*) AS SESSION_COUNT FROM "MSMM DASHBOARD".USER_SESSIONS;
