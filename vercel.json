@@ -11,7 +11,8 @@
     },
     "api/cron.py": {
       "includeFiles": "AI Tools/LicenseReminderTool-main/**"
-    }
+    },
+    "api/auth.py": {}
   },
   "rewrites": [
     {

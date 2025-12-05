@@ -27,6 +27,66 @@
             text-align: center;
             color: white;
             margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .logout-section {
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .username-display {
+            color: white;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         h1 {
@@ -133,8 +193,16 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
         <header>
+            <div class="logout-section">
+                <span class="username-display">Welcome, <strong id="usernameDisplay"></strong></span>
+                <button class="btn-logout" id="logoutButton">Logout</button>
+            </div>
             <h1>MSMM AI Tools</h1>
             <p class="subtitle">Intelligent Solutions for Engineering Excellence</p>
         </header>
@@ -180,5 +248,59 @@
             </p>
         </footer>
     </div>
+
+    <script>
+        // Check authentication on page load
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/auth', {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    // User is authenticated, show content
+                    document.getElementById('usernameDisplay').textContent = data.username;
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                } else {
+                    // Redirect to login
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // Redirect to login on error
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Logout handler
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutButton = document.getElementById('logoutButton');
+
+            logoutButton.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/auth', {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok) {
+                        window.location.href = '/login.html';
+                    } else {
+                        console.error('Logout failed');
+                        // Force redirect anyway
+                        window.location.href = '/login.html';
+                    }
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    window.location.href = '/login.html';
+                }
+            });
+        });
+
+        // Run auth check on page load
+        checkAuth();
+    </script>
 </body>
 </html>
