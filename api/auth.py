@@ -1,16 +1,25 @@
+"""
+Authentication API for MSMM AI Tools
+Handles login, logout, and session verification
+"""
+
 from flask import Flask, request, jsonify, make_response
 import oracledb
 import os
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-import json
 from dotenv import load_dotenv
+import sys
 
 # Load environment variables
 load_dotenv()
 
+# Configure logging
+print("[Auth] Initializing authentication API", file=sys.stderr)
+
 app = Flask(__name__)
+app.secret_key = os.getenv('FLASK_SECRET_KEY', 'your-secret-key-change-this')
 
 # Oracle connection configuration
 ORACLE_HOST = os.getenv('ORACLE_HOST')
@@ -21,7 +30,7 @@ ORACLE_PASSWORD = os.getenv('ORACLE_PASSWORD')
 ORACLE_SCHEMA = os.getenv('ORACLE_SCHEMA', 'MSMM DASHBOARD')
 
 # In-memory session store (for serverless)
-# Note: In production, you'd typically use a database or Redis for session persistence
+# Note: In production, consider using database-backed sessions
 sessions = {}
 
 def get_db_connection():
@@ -35,7 +44,7 @@ def get_db_connection():
         )
         return connection
     except Exception as e:
-        print(f"Database connection error: {e}")
+        print(f"[Auth] Database connection error: {e}", file=sys.stderr)
         raise
 
 def hash_password(password):
@@ -89,26 +98,28 @@ def init_database():
         conn.commit()
         cursor.close()
         conn.close()
-        print("Database initialized successfully")
+        print("[Auth] Database initialized successfully", file=sys.stderr)
 
     except Exception as e:
-        print(f"Database initialization error: {e}")
-        raise
+        print(f"[Auth] Database initialization error: {e}", file=sys.stderr)
+
+# Initialize database on startup
+try:
+    init_database()
+except Exception as e:
+    print(f"[Auth] Failed to initialize database: {e}", file=sys.stderr)
 
 @app.route('/api/auth', methods=['POST', 'GET', 'DELETE'])
-def handler(request):
-    """Main handler for Vercel serverless function"""
-
-    # Initialize database on first request
-    try:
-        init_database()
-    except:
-        pass  # Table already exists
+def auth_handler():
+    """Handle authentication requests"""
 
     if request.method == 'POST':
         # Login
         try:
             data = request.get_json()
+            if not data:
+                return jsonify({'success': False, 'message': 'Invalid request'}), 400
+
             username = data.get('username')
             password = data.get('password')
 
@@ -163,14 +174,18 @@ def handler(request):
                     secure=True
                 )
 
+                print(f"[Auth] Login successful for user: {user[1]}", file=sys.stderr)
                 return response, 200
             else:
                 cursor.close()
                 conn.close()
+                print(f"[Auth] Login failed for user: {username}", file=sys.stderr)
                 return jsonify({'success': False, 'message': 'Invalid credentials'}), 401
 
         except Exception as e:
-            print(f"Login error: {e}")
+            print(f"[Auth] Login error: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc(file=sys.stderr)
             return jsonify({'success': False, 'message': 'Server error'}), 500
 
     elif request.method == 'GET':
@@ -194,7 +209,7 @@ def handler(request):
             }), 200
 
         except Exception as e:
-            print(f"Session verification error: {e}")
+            print(f"[Auth] Session verification error: {e}", file=sys.stderr)
             return jsonify({'authenticated': False}), 401
 
     elif request.method == 'DELETE':
@@ -203,7 +218,9 @@ def handler(request):
             session_token = request.cookies.get('session_token')
 
             if session_token and session_token in sessions:
+                username = sessions[session_token]['username']
                 del sessions[session_token]
+                print(f"[Auth] Logout successful for user: {username}", file=sys.stderr)
 
             response = make_response(jsonify({
                 'success': True,
@@ -214,7 +231,16 @@ def handler(request):
             return response, 200
 
         except Exception as e:
-            print(f"Logout error: {e}")
+            print(f"[Auth] Logout error: {e}", file=sys.stderr)
             return jsonify({'success': False, 'message': 'Server error'}), 500
 
     return jsonify({'success': False, 'message': 'Method not allowed'}), 405
+
+@app.route('/health')
+def health():
+    """Health check endpoint"""
+    return jsonify({'status': 'ok', 'service': 'auth'}), 200
+
+# For local testing
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)
