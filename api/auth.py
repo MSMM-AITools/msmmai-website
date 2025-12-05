@@ -36,11 +36,21 @@ def get_db_connection():
     """Create and return a database connection"""
     try:
         dsn = oracledb.makedsn(ORACLE_HOST, ORACLE_PORT, service_name=ORACLE_SERVICE_NAME)
-        connection = oracledb.connect(
-            user=ORACLE_USER,
-            password=ORACLE_PASSWORD,
-            dsn=dsn
-        )
+
+        # When connecting as SYS, we need to specify SYSDBA mode
+        if ORACLE_USER.upper() == 'SYS':
+            connection = oracledb.connect(
+                user=ORACLE_USER,
+                password=ORACLE_PASSWORD,
+                dsn=dsn,
+                mode=oracledb.SYSDBA
+            )
+        else:
+            connection = oracledb.connect(
+                user=ORACLE_USER,
+                password=ORACLE_PASSWORD,
+                dsn=dsn
+            )
         return connection
     except Exception as e:
         print(f"[Auth] Database connection error: {e}", file=sys.stderr)
