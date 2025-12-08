@@ -4,12 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a unified deployment of multiple AI tools for MSMM Engineering on Vercel. The repository deploys two main applications under a single domain (msmmai.com):
+This is a unified deployment of multiple AI tools for MSMM Engineering on Vercel. The repository deploys three main applications under a single domain (msmmai.com):
 - **License Reminder Tool** (Flask/Python) - Automated license expiration tracking and email reminders
 - **Business Development Tool** (Node.js/Express) - Proposal management system with calendar and organization tracking
+- **Project Writeup Tool** (Flask/Python) - AI-powered project documentation generator using GPT-4 Turbo
 - **MSMM Local ChatGPT** (External Link) - Link to local network AI assistant at http://10.10.40.103:8080/ (only accessible on MSMM_ENG WiFi)
 
-Both applications share a single Oracle Database backend and are deployed as Vercel serverless functions.
+The License Reminder Tool and Business Development Tool share a single Oracle Database backend. The Project Writeup Tool uses OpenAI API for content generation. All applications are deployed as Vercel serverless functions.
 
 ## Development Commands
 
@@ -71,6 +72,7 @@ The application uses Vercel's routing configuration (`vercel.json`) to mount mul
 1. **/** - Static homepage (`index.html`) with tool tiles
 2. **/licenseremindertool/** - Flask app via `api/licenseremindertool.py` wrapper
 3. **/businessdev/** - Express app via `api/businessdev.js` wrapper
+4. **/project-writeup/** - Flask app via `api/projectwriteup.py` wrapper
 
 ### Serverless Function Wrappers
 
@@ -78,6 +80,7 @@ The `/api` directory contains wrapper functions that mount the original applicat
 
 - **api/licenseremindertool.py** - Imports Flask app from `AI Tools/LicenseReminderTool-main/api/index.py` and mounts it at `/licenseremindertool` using Werkzeug's DispatcherMiddleware
 - **api/businessdev.js** - Imports Express app from `AI Tools/BusinessDev_NewUI/server/api.js` and mounts it at `/businessdev` with static file serving
+- **api/projectwriteup.py** - Imports Flask app from `AI Tools/Projects_Writeup/api/index.py` and mounts it at `/project-writeup` using Werkzeug's DispatcherMiddleware
 - **api/cron.py** - Standalone cron handler for scheduled license reminder checks (runs daily at 9:00 AM UTC)
 - **api/auth.py** - Authentication API with database-backed sessions (login, logout, session verification)
 
@@ -244,6 +247,9 @@ SENDER_EMAIL=
 FROM_EMAIL=
 FROM_NAME=
 
+# OpenAI (Project Writeup Tool)
+OPENAI_API_KEY=
+
 # Application
 FLASK_SECRET_KEY=
 CRON_SECRET=
@@ -265,6 +271,9 @@ Endpoint: `/licenseremindertool/api/cron/check-reminders` → `api/cron.py`
 3. **Path Resolution**: In serverless wrappers, use absolute paths from `__file__` or `__dirname`
 4. **Template Folders**: Flask templates must use absolute paths in serverless environment
 5. **Connection Timeouts**: Set `connectTimeout` and `callTimeout` for Oracle connections (60 seconds recommended)
+6. **OpenAI Rate Limits**: Project Writeup Tool uses GPT-4 Turbo - monitor API usage and rate limits
+7. **File Size Limits**: Vercel has 4.5MB upload limit for serverless functions (16MB for local dev)
+8. **Function Timeout**: Project Writeup Tool has 60-second maxDuration set in vercel.json for AI generation
 
 ## File Organization
 
@@ -274,20 +283,29 @@ Endpoint: `/licenseremindertool/api/cron/check-reminders` → `api/cron.py`
 │   ├── auth.py                            # Authentication API
 │   ├── businessdev.js                     # BusinessDev wrapper
 │   ├── cron.py                            # Cron job handler
-│   └── licenseremindertool.py             # License tool wrapper
+│   ├── licenseremindertool.py             # License tool wrapper
+│   └── projectwriteup.py                  # Project writeup wrapper
 │
 ├── AI Tools/
 │   ├── LicenseReminderTool-main/
 │   │   ├── api/index.py                   # Main Flask application
 │   │   ├── templates/                     # Jinja2 templates
-│   │   └── static/                        # CSS, JS, images
+│   │   ├── static/                        # CSS, JS, images
+│   │   └── utils/auth_middleware.py       # Shared auth middleware
 │   │
-│   └── BusinessDev_NewUI/
-│       ├── server/api.js                  # Express API routes
-│       ├── db/connection.js               # Database utilities
-│       ├── index.html                     # Main UI
-│       ├── pages/                         # Additional pages (table, calendar)
-│       └── js/                            # Client-side JavaScript
+│   ├── BusinessDev_NewUI/
+│   │   ├── server/api.js                  # Express API routes
+│   │   ├── db/connection.js               # Database utilities
+│   │   ├── middleware/auth.js             # Auth middleware for Express
+│   │   ├── index.html                     # Main UI
+│   │   ├── pages/                         # Additional pages (table, calendar)
+│   │   └── js/                            # Client-side JavaScript
+│   │
+│   └── Projects_Writeup/
+│       ├── api/index.py                   # Main Flask application
+│       ├── templates/                     # HTML templates + Jinja2 DOCX template
+│       ├── static/                        # CSS, JS
+│       └── app.py                         # Standalone version (for local dev)
 │
 ├── index.html                             # Main homepage
 ├── login.html                             # Authentication page

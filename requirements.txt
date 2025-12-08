@@ -1,6 +1,14 @@
-# Python dependencies for License Reminder Tool Vercel deployment
-# Only includes dependencies needed for Flask web app (api/index.py)
-# Excludes pandas, openpyxl, schedule which are only used by CLI tools
+# Python dependencies for Vercel deployment
+# License Reminder Tool + Project Writeup Tool
 python-dotenv>=1.0.0
 flask>=2.3.0
 oracledb>=3.0.0
+
+# Project Writeup Tool dependencies
+python-docx==0.8.11
+docxtpl==0.16.7
+openai>=1.30.0
+PyPDF2==3.0.1
+docx2txt
+werkzeug==2.3.7
+Jinja2

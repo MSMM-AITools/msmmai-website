@@ -11,6 +11,10 @@
     },
     "api/cron.py": {
       "includeFiles": "AI Tools/LicenseReminderTool-main/**"
+    },
+    "api/projectwriteup.py": {
+      "includeFiles": "AI Tools/Projects_Writeup/**",
+      "maxDuration": 60
     }
   },
   "rewrites": [
@@ -33,6 +37,14 @@
     {
       "source": "/licenseremindertool",
       "destination": "/api/licenseremindertool"
+    },
+    {
+      "source": "/project-writeup/(.*)",
+      "destination": "/api/projectwriteup"
+    },
+    {
+      "source": "/project-writeup",
+      "destination": "/api/projectwriteup"
     }
   ],
   "crons": [
