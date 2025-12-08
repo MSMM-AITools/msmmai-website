@@ -136,10 +136,11 @@ document.addEventListener('DOMContentLoaded', function() {
     async function uploadFiles(formData) {
         try {
             showLoading(true);
-            
-            const response = await fetch('/upload_documents', {
+
+            const response = await fetch('/project-writeup/upload_documents', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
 
             const result = await response.json();
@@ -173,10 +174,11 @@ document.addEventListener('DOMContentLoaded', function() {
     async function uploadQuoteFiles(formData) {
         try {
             showLoading(true, 'Processing quote documents with AI...');
-            
-            const response = await fetch('/upload_quotes', {
+
+            const response = await fetch('/project-writeup/upload_quotes', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                credentials: 'include'
             });
 
             const result = await response.json();
@@ -290,12 +292,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     version_number: i + 1
                 };
                 
-                const response = await fetch('/generate_single_description', {
+                const response = await fetch('/project-writeup/generate_single_description', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(requestData),
+                    credentials: 'include',
                     signal: AbortSignal.timeout(55000) // 55 second timeout
                 });
 
@@ -427,12 +430,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     version_number: i + 1
                 };
                 
-                const response = await fetch('/generate_single_description', {
+                const response = await fetch('/project-writeup/generate_single_description', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(requestData),
+                    credentials: 'include',
                     signal: AbortSignal.timeout(55000) // 55 second timeout
                 });
 
@@ -492,12 +496,13 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoading(true, 'Generating final document...');
 
-            const response = await fetch('/generate_document', {
+            const response = await fetch('/project-writeup/generate_document', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(projectData)
+                body: JSON.stringify(projectData),
+                credentials: 'include'
             });
 
             if (response.ok) {
