@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a unified deployment of multiple AI tools for MSMM Engineering on Vercel. The repository deploys two main applications under a single domain (msmmai.com):
 - **License Reminder Tool** (Flask/Python) - Automated license expiration tracking and email reminders
 - **Business Development Tool** (Node.js/Express) - Proposal management system with calendar and organization tracking
+- **MSMM Local ChatGPT** (External Link) - Link to local network AI assistant at http://10.10.40.103:8080/ (only accessible on MSMM_ENG WiFi)
 
 Both applications share a single Oracle Database backend and are deployed as Vercel serverless functions.
 
