@@ -12,11 +12,48 @@ print("[ProjectWriteup Init] Starting projectwriteup.py initialization", file=sy
 print(f"[ProjectWriteup Init] Current working directory: {os.getcwd()}", file=sys.stderr)
 print(f"[ProjectWriteup Init] __file__: {__file__}", file=sys.stderr)
 
-# Add the Projects_Writeup directory to Python path
-project_path = Path(__file__).parent.parent / 'AI Tools' / 'Projects_Writeup'
-print(f"[ProjectWriteup Init] Project path: {project_path}", file=sys.stderr)
-print(f"[ProjectWriteup Init] Project path exists: {project_path.exists()}", file=sys.stderr)
-print(f"[ProjectWriteup Init] Project path absolute: {project_path.absolute()}", file=sys.stderr)
+# List contents to debug
+try:
+    base_path = Path(__file__).parent.parent
+    print(f"[ProjectWriteup Init] Base path: {base_path}", file=sys.stderr)
+    if base_path.exists():
+        items = list(base_path.iterdir())
+        print(f"[ProjectWriteup Init] Base path contents: {[str(x.name) for x in items[:10]]}", file=sys.stderr)
+
+        # Check for AI Tools directory
+        ai_tools_candidates = [
+            base_path / 'AI Tools',
+            base_path / 'AI_Tools',
+            base_path / 'AITools',
+        ]
+        for candidate in ai_tools_candidates:
+            if candidate.exists():
+                print(f"[ProjectWriteup Init] Found AI Tools at: {candidate}", file=sys.stderr)
+                items = list(candidate.iterdir())
+                print(f"[ProjectWriteup Init] AI Tools contents: {[str(x.name) for x in items[:10]]}", file=sys.stderr)
+                break
+except Exception as e:
+    print(f"[ProjectWriteup Init] Error listing directories: {e}", file=sys.stderr)
+
+# Try multiple possible paths for Projects_Writeup
+possible_paths = [
+    Path(__file__).parent.parent / 'AI Tools' / 'Projects_Writeup',
+    Path(__file__).parent.parent / 'AI_Tools' / 'Projects_Writeup',
+    Path(__file__).parent.parent / 'Projects_Writeup',
+]
+
+project_path = None
+for path_candidate in possible_paths:
+    print(f"[ProjectWriteup Init] Trying path: {path_candidate}", file=sys.stderr)
+    if path_candidate.exists():
+        project_path = path_candidate
+        print(f"[ProjectWriteup Init] Found project at: {project_path}", file=sys.stderr)
+        break
+
+if not project_path:
+    print(f"[ProjectWriteup Init] ERROR: Could not find Projects_Writeup directory", file=sys.stderr)
+    print(f"[ProjectWriteup Init] Tried paths: {[str(p) for p in possible_paths]}", file=sys.stderr)
+    raise FileNotFoundError("Projects_Writeup directory not found")
 
 sys.path.insert(0, str(project_path))
 print(f"[ProjectWriteup Init] Python path after insert: {sys.path[:3]}", file=sys.stderr)

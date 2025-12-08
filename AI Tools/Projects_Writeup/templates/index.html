@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSMM Engineering - Project Writer</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #34495e;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .file-upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            background: #e9ecef;
+            border-color: #2980b9;
+        }
+
+        .file-upload-area.dragover {
+            background: #e3f2fd;
+            border-color: #1976d2;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #5a6c7d;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: #8a9ba8;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .description-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .description-versions {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .version-card {
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .version-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.1);
+        }
+
+        .version-card.selected {
+            border-color: #27ae60;
+            background: #f8fff8;
+        }
+
+        .version-header {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .uploaded-files {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #3498db;
+        }
+
+        .file-name {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .file-preview {
+            font-size: 0.9rem;
+            color: #5a6c7d;
+            line-height: 1.4;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #generateDocumentBtn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+
+        .extracted-quotes {
+            margin-top: 20px;
+        }
+
+        .quote-info {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quote-item {
+            background: #fff;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .quote-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .quote-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .quote-checkbox input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .quote-checkbox label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .quote-text {
+            font-style: italic;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .quote-author {
+            font-weight: 500;
+            color: #5a6c7d;
+            font-size: 0.9rem;
+        }
+
+        .regenerate-section {
+            border: 2px dashed #3498db;
+        }
+
+        #quoteUploadArea {
+            border-color: #e74c3c;
+        }
+
+        #quoteUploadArea:hover {
+            border-color: #c0392b;
+            background: #fdf2f2;
+        }
+
+        #quoteUploadArea .upload-icon {
+            color: #e74c3c;
+        }
+
+        .version-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .version-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .custom-description-section {
+            background: #f0f7ff;
+            border: 2px solid #3498db;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .custom-description-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .custom-description-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .copy-btn {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+
+        .version-editable {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-building"></i> MSMM Engineering</h1>
+            <p>Professional Project Writer & Documentation Generator</p>
+        </div>
+
+        <div class="form-container">
+            <form id="projectForm">
+                <!-- Project Information Section -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-info-circle"></i> Project Information</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title_location">Title & Location</label>
+                            <input type="text" id="title_location" name="title_location" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="year_professional">Year Completed - Professional Services</label>
+                            <input type="text" id="year_professional" name="year_professional" class="form-control" placeholder="e.g., 2023, 2022-2023, Ongoing">
+                        </div>
+                        <div class="form-group">
+                            <label for="year_construction">Year Completed - Construction</label>
+                            <input type="text" id="year_construction" name="year_construction" class="form-control" placeholder="e.g., 2024, 2023-2024, In Progress">
+                        </div>
+                        <div class="form-group">
+                            <label for="project_owner">Project Owner</label>
+                            <input type="text" id="project_owner" name="project_owner" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="point_of_contact">Point of Contact</label>
+                            <input type="text" id="point_of_contact" name="point_of_contact" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="telephone">Telephone Number</label>
+                            <input type="tel" id="telephone" name="telephone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="firm_name">Firm Name</label>
+                            <input type="text" id="firm_name" name="firm_name" class="form-control" value="MSMM Engineering">
+                        </div>
+                        <div class="form-group">
+                            <label for="firm_location">Firm Location</label>
+                            <input type="text" id="firm_location" name="firm_location" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="roles">Roles</label>
+                        <textarea id="roles" name="roles" class="form-control" rows="3" placeholder="Describe the roles and responsibilities in this project"></textarea>
+                    </div>
+                </div>
+
+                <!-- Document Upload Section -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-upload"></i> Project Documents</h2>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">Click to upload or drag and drop files</div>
+                        <div class="upload-hint">Supported formats: DOC, DOCX, PDF, TXT (Max 16MB each)</div>
+                        <input type="file" id="documentFiles" multiple accept=".doc,.docx,.pdf,.txt" style="display: none;">
+                    </div>
+                    <div id="uploadedFiles" class="uploaded-files"></div>
+                </div>
+
+                <!-- Quote Upload Section -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-quote-right"></i> Client Testimonials & Quotes</h2>
+                    <p style="margin-bottom: 20px; color: #5a6c7d;">Upload emails, letters, or documents containing client feedback that can be converted into professional quotes.</p>
+                    <div class="file-upload-area" id="quoteUploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="upload-text">Click to upload quote documents</div>
+                        <div class="upload-hint">Supported formats: DOC, DOCX, PDF (Max 16MB each)</div>
+                        <input type="file" id="quoteFiles" multiple accept=".doc,.docx,.pdf" style="display: none;">
+                    </div>
+                    <div id="uploadedQuotes" class="uploaded-files"></div>
+                    <div id="extractedQuotes" class="extracted-quotes" style="display: none;">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;">Extracted Quotes:</h3>
+                        <div id="quotesContainer"></div>
+                    </div>
+                </div>
+
+                <!-- Brief Description Configuration -->
+                <div class="form-section">
+                    <h2 class="section-title"><i class="fas fa-edit"></i> Brief Description Settings</h2>
+                    <div class="description-options">
+                        <div class="form-group">
+                            <label for="num_responses">Number of Responses</label>
+                            <select id="num_responses" name="num_responses" class="form-control">
+                                <option value="1">1 Response</option>
+                                <option value="3" selected>3 Responses</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="max_words">Target Word Count</label>
+                            <input type="number" id="max_words" name="max_words" class="form-control" value="200" min="50" max="5000">
+                        </div>
+                        <div class="form-group">
+                            <label for="num_paragraphs">Number of Paragraphs</label>
+                            <input type="number" id="num_paragraphs" name="num_paragraphs" class="form-control" value="2" min="1" max="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="tense">Tense</label>
+                            <select id="tense" name="tense" class="form-control">
+                                <option value="past">Past Tense</option>
+                                <option value="present">Present Tense</option>
+                                <option value="future">Future Tense</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="paragraph_titles">Paragraph Titles (comma-separated)</label>
+                        <input type="text" id="paragraph_titles" name="paragraph_titles" class="form-control" placeholder="Project Overview, Technical Scope, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="keywords">Keywords (comma-separated)</label>
+                        <input type="text" id="keywords" name="keywords" class="form-control" placeholder="civil engineering, infrastructure, construction, etc.">
+                    </div>
+                    <button type="button" id="generateDescriptionsBtn" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> Generate Brief Descriptions
+                    </button>
+                </div>
+
+                <!-- Generated Descriptions -->
+                <div id="descriptionVersions" class="description-versions">
+                    <h2 class="section-title"><i class="fas fa-list-alt"></i> Generated Descriptions</h2>
+                    <p>Edit the generated descriptions below or create your own custom version:</p>
+                    <div id="versionsContainer"></div>
+                    
+                    <!-- Custom Brief Description Section -->
+                    <div class="custom-description-section">
+                        <div class="custom-description-header">
+                            <i class="fas fa-pencil-alt"></i>
+                            <h3>Custom Brief Description</h3>
+                        </div>
+                        <p style="color: #5a6c7d; margin-bottom: 15px;">Copy sections from the generated versions above and create your own custom description:</p>
+                        <textarea id="customDescription" class="version-textarea" placeholder="Paste or write your custom brief description here..."></textarea>
+                    </div>
+                    
+                    <!-- Regenerate with User Input -->
+                    <div id="regenerateSection" class="regenerate-section" style="display: none; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;"><i class="fas fa-redo"></i> Generate More Responses</h3>
+                        <p style="color: #5a6c7d; margin-bottom: 15px;">Not satisfied with the results? Add specific instructions to refine the descriptions:</p>
+                        <div class="form-group">
+                            <label for="userPrompt">Additional Instructions</label>
+                            <textarea id="userPrompt" name="userPrompt" class="form-control" rows="3" placeholder="e.g., Focus more on sustainability aspects, include more technical details about structural design, emphasize cost savings achieved..."></textarea>
+                        </div>
+                        <button type="button" id="regenerateDescriptionsBtn" class="btn btn-primary">
+                            <i class="fas fa-magic"></i> Generate New Versions
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Animation -->
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Generating descriptions using AI...</p>
+                </div>
+
+                <!-- Generate Final Document -->
+                <button type="button" id="generateDocumentBtn" class="btn btn-success hidden">
+                    <i class="fas fa-file-download"></i> Generate Final Document
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html> 

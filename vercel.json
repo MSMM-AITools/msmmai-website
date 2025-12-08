@@ -13,7 +13,7 @@
       "includeFiles": "AI Tools/LicenseReminderTool-main/**"
     },
     "api/projectwriteup.py": {
-      "includeFiles": "AI Tools/Projects_Writeup/**",
+      "includeFiles": "{AI Tools/Projects_Writeup/**,AI Tools/LicenseReminderTool-main/utils/**}",
       "maxDuration": 60
     }
   },

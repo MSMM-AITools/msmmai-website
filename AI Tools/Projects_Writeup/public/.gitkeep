@@ -1,0 +1,2 @@
+# This file ensures the public directory exists for Vercel static file serving
+# Static assets can be placed here for direct access via URL 
