@@ -13,6 +13,12 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import json
+import sys
+from pathlib import Path
+
+# Add utils directory to path for auth middleware
+sys.path.insert(0, str(Path(__file__).parent.parent / 'utils'))
+from auth_middleware import require_auth
 
 # Load environment variables
 load_dotenv()
@@ -25,9 +31,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Create Flask app with proper template paths for Vercel
-import sys
-from pathlib import Path
-
 # Get the correct path for templates
 if os.path.exists('/var/task/templates'):
     # Vercel production
@@ -147,6 +150,7 @@ def health_check():
     })
 
 @app.route('/')
+@require_auth
 def dashboard():
     """Main dashboard page"""
     try:
@@ -366,6 +370,7 @@ def dashboard():
 
 
 @app.route('/licenses')
+@require_auth
 def licenses():
     """View all licenses with filtering"""
     try:
@@ -510,6 +515,7 @@ def licenses():
 
 
 @app.route('/license/<int:license_id>')
+@require_auth
 def view_license(license_id):
     """View single license details"""
     try:
@@ -536,6 +542,7 @@ def view_license(license_id):
 
 
 @app.route('/license/<int:license_id>/edit', methods=['GET', 'POST'])
+@require_auth
 def edit_license(license_id):
     """Edit license information"""
     schema = ORACLE_CONFIG['schema']
@@ -601,6 +608,7 @@ def edit_license(license_id):
 
 
 @app.route('/license/<int:license_id>/delete', methods=['POST'])
+@require_auth
 def delete_license(license_id):
     """Delete a license"""
     try:
@@ -632,6 +640,7 @@ def delete_license(license_id):
 
 
 @app.route('/reminders')
+@require_auth
 def reminders():
     """View reminder history"""
     try:
@@ -677,6 +686,7 @@ def reminders():
 
 
 @app.route('/api/stats')
+@require_auth
 def api_stats():
     """API endpoint for dashboard statistics"""
     try:
@@ -729,6 +739,7 @@ def api_stats():
 
 
 @app.route('/api/upcoming')
+@require_auth
 def api_upcoming():
     """API endpoint for upcoming expirations"""
     try:
@@ -758,6 +769,7 @@ def api_upcoming():
 
 
 @app.route('/api/license', methods=['POST'])
+@require_auth
 def api_create_license():
     """API endpoint for creating a new license"""
     try:
@@ -819,6 +831,7 @@ def api_create_license():
 
 
 @app.route('/api/license/<int:license_id>', methods=['GET', 'PUT', 'DELETE'])
+@require_auth
 def api_license(license_id):
     """API endpoint for single license operations"""
     schema = ORACLE_CONFIG['schema']
@@ -908,6 +921,7 @@ def api_license(license_id):
 
 
 @app.route('/api/license-types')
+@require_auth
 def api_license_types():
     """API endpoint to get unique license types"""
     try:
@@ -929,6 +943,7 @@ def api_license_types():
 
 
 @app.route('/api/license-states')
+@require_auth
 def api_license_states():
     """API endpoint to get unique license states"""
     try:
@@ -950,6 +965,7 @@ def api_license_states():
 
 
 @app.route('/api/license/<int:license_id>/toggle-emails', methods=['POST'])
+@require_auth
 def api_toggle_emails(license_id):
     """API endpoint to toggle email notifications for a license"""
     try:
@@ -1201,6 +1217,7 @@ Best regards,
 
 
 @app.route('/api/send-reminders', methods=['POST'])
+@require_auth
 def api_send_reminders():
     """API endpoint to send email reminders for selected licenses"""
     try:

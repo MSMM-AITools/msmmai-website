@@ -2,7 +2,9 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const db = require('../db/connection');
+const { requireAuth } = require('../middleware/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -25,9 +27,13 @@ function toLowerCaseKeys(obj) {
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 // Serve static files from assets directory
 app.use('/assets', express.static('assets'));
+
+// Apply authentication middleware to all /api/* routes
+app.use('/api/*', requireAuth);
 
 /**
  * Get proposals with filters
