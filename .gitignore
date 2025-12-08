@@ -43,3 +43,4 @@ env/
 *.tmp
 *.bak
 vercel_logs/
+CLAUDE.md

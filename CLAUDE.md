@@ -169,7 +169,7 @@ All API endpoints and pages REQUIRE authentication except:
 ```javascript
 // AI Tools/BusinessDev_NewUI/middleware/auth.js
 const { requireAuth } = require('../middleware/auth');
-app.use('/api/*', requireAuth);  // Protects all /api/* routes
+app.use('/api', requireAuth);  // Protects all /api routes
 ```
 
 **Python (License Tool)**:

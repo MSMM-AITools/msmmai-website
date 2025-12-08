@@ -32,8 +32,8 @@ app.use(cookieParser());
 // Serve static files from assets directory
 app.use('/assets', express.static('assets'));
 
-// Apply authentication middleware to all /api/* routes
-app.use('/api/*', requireAuth);
+// Apply authentication middleware to all /api routes
+app.use('/api', requireAuth);
 
 /**
  * Get proposals with filters
