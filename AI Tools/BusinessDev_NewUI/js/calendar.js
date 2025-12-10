@@ -458,14 +458,27 @@ async function handleEventResize(info) {
  * Update event dates via API
  */
 async function updateEventDates(eventId, start, end, allDay) {
+    let startDate, endDate;
+    
+    if (allDay) {
+        // For all-day events, use noon UTC to prevent timezone shifts from changing the date
+        const startStr = start.toISOString().split('T')[0];
+        const endStr = end ? end.toISOString().split('T')[0] : startStr;
+        startDate = startStr + 'T12:00:00.000Z';
+        endDate = endStr + 'T12:00:00.000Z';
+    } else {
+        startDate = start.toISOString();
+        endDate = end ? end.toISOString() : start.toISOString();
+    }
+    
     const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            START_DATE: start.toISOString(),
-            END_DATE: end ? end.toISOString() : start.toISOString(),
+            START_DATE: startDate,
+            END_DATE: endDate,
             ALL_DAY: allDay ? 'Y' : 'N'
         })
     });
@@ -674,10 +687,11 @@ async function saveEvent() {
         let startDate, endDate;
         
         if (allDay) {
-            // For all-day events, use date string directly without time (YYYY-MM-DD)
-            // This prevents timezone conversion issues
-            startDate = start + 'T00:00:00';
-            endDate = end + 'T00:00:00';
+            // For all-day events, use NOON (12:00) instead of midnight to prevent
+            // timezone shifts from changing the calendar date.
+            // Using noon means ±12 hour timezone shifts won't affect the date.
+            startDate = start + 'T12:00:00.000Z';
+            endDate = end + 'T12:00:00.000Z';
         } else {
             // For timed events, the datetime-local input gives us local time
             // Convert to ISO but preserve the local time
@@ -778,13 +792,17 @@ function formatDateForInput(date, dateOnly = false) {
     const d = typeof date === 'string' ? new Date(date) : date;
     
     if (dateOnly) {
-        // For date-only inputs, use UTC methods to avoid timezone shifts
-        const year = d.getUTCFullYear();
-        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
-        const day = String(d.getUTCDate()).padStart(2, '0');
+        // For all-day events, use LOCAL date methods.
+        // This works correctly for both:
+        // 1. Dates from FullCalendar selection (midnight local time)
+        // 2. Dates from database (noon UTC - when converted to local time, 
+        //    noon UTC stays within the same calendar date for all timezones)
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     } else {
-        // For datetime inputs, use local time
+        // For timed events, use local time
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
         const day = String(d.getDate()).padStart(2, '0');
