@@ -14,24 +14,24 @@
     <!-- Custom CSS -->
     <style>
         .sidebar {
-            background: #eff6ff;
+            background: #dbeafe;
             min-height: 100vh;
             color: #1e3a5f;
             position: relative;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid #dbeafe;
+            border-right: 1px solid #bfdbfe;
         }
         
         .sidebar .nav-link {
-            color: #475569;
+            color: #1e40af;
             transition: all 0.3s ease;
         }
         
         .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
-            color: #1e40af;
-            background-color: #dbeafe;
+            color: #1e3a8a;
+            background-color: #bfdbfe;
             border-radius: 8px;
         }
         
@@ -213,7 +213,7 @@
                         <li class="nav-item mb-2">
                             <a href="https://www.msmmai.com/" class="nav-link">
                                 <i class="fas fa-home me-2"></i>
-                                Home Page
+                                MSMM AI Home
                             </a>
                         </li>
                         <li class="nav-item mb-2">
@@ -225,7 +225,7 @@
                         <li class="nav-item mb-2">
                             <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
                                 <i class="fas fa-tachometer-alt me-2"></i>
-                                Dashboard
+                                License Home
                             </a>
                         </li>
                         <li class="nav-item mb-2">
@@ -237,7 +237,7 @@
                         <li class="nav-item mb-2">
                             <a href="{{ url_for('reminders') }}" class="nav-link {% if request.endpoint == 'reminders' %}active{% endif %}">
                                 <i class="fas fa-envelope me-2"></i>
-                                Email History
+                                License Email History
                             </a>
                         </li>
                     </ul>
