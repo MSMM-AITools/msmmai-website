@@ -205,6 +205,26 @@
             font-weight: 500;
         }
 
+        .license-alert {
+            display: none;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.375rem 0.625rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            border: 1px solid #fcd34d;
+        }
+
+        .license-alert.visible {
+            display: block;
+        }
+
+        .license-alert-icon {
+            margin-right: 0.375rem;
+        }
+
         .footer {
             text-align: center;
             color: #64748b;
@@ -265,6 +285,10 @@
                             <span class="status-indicator"></span>Active
                         </span>
                         <span>Python/Flask</span>
+                    </div>
+                    <div id="licenseAlert" class="license-alert">
+                        <span class="license-alert-icon">⚠️</span>
+                        <span id="licenseAlertText"></span>
                     </div>
                 </div>
             </a>
@@ -381,6 +405,37 @@
 
         // Run auth check on page load
         checkAuth();
+
+        // Fetch license stats and show alert if licenses are due within 30 days
+        async function checkLicenseAlerts() {
+            try {
+                const response = await fetch('/licenseremindertool/api/stats');
+                if (response.ok) {
+                    const stats = await response.json();
+                    const expiringCount = stats.expiring_soon || 0;
+                    
+                    if (expiringCount > 0) {
+                        const alertEl = document.getElementById('licenseAlert');
+                        const textEl = document.getElementById('licenseAlertText');
+                        
+                        if (alertEl && textEl) {
+                            const licenseText = expiringCount === 1 ? 'License' : 'Licenses';
+                            textEl.textContent = `(${expiringCount}) ${licenseText} due within 30 days`;
+                            alertEl.classList.add('visible');
+                        }
+                    }
+                }
+            } catch (error) {
+                // Silently fail - don't disrupt the homepage if stats can't be fetched
+                console.log('Could not fetch license stats:', error);
+            }
+        }
+
+        // Check license alerts after auth is confirmed
+        document.addEventListener('DOMContentLoaded', () => {
+            // Delay license check to ensure auth is done
+            setTimeout(checkLicenseAlerts, 500);
+        });
     </script>
 </body>
 </html>
