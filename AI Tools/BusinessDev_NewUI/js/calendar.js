@@ -237,6 +237,7 @@ async function loadLicenses(info, successCallback, failureCallback) {
                         licenseType: license.LIC_TYPE,
                         licenseNumber: license.LIC_NO,
                         fullText: license.LIC_FULL_TEXT,
+                        licenseComments: license.LIC_COMMENTS,
                         editable: false,
                         isLicense: true
                     }
@@ -348,6 +349,10 @@ function handleEventMouseEnter(info) {
     // If LIC_FULL_TEXT is missing or null, create a basic summary
     if (!fullText || fullText.trim() === '') {
         fullText = `License Name: ${event.extendedProps.licenseName || 'N/A'}, License Type: ${event.extendedProps.licenseType || 'N/A'}, License State: ${event.extendedProps.licenseState || 'N/A'}, Expiration Date: ${new Date(event.start).toLocaleDateString()}`;
+        // Add comments if available
+        if (event.extendedProps.licenseComments) {
+            fullText += `, Comments: ${event.extendedProps.licenseComments}`;
+        }
     } else {
         // Check if expiration date is missing from LIC_FULL_TEXT (empty value after "Expiration Date:")
         if (fullText.includes('Expiration Date: ,') || fullText.includes('Expiration Date:  ,') || (fullText.includes('Expiration Date:') && !fullText.match(/Expiration Date:\s*\d{4}-\d{2}-\d{2}/))) {
@@ -356,6 +361,10 @@ function handleEventMouseEnter(info) {
             fullText = fullText.replace(/Expiration Date:\s*,/, `Expiration Date: ${expirationDate},`);
             fullText = fullText.replace(/Expiration Date:\s+,/, `Expiration Date: ${expirationDate},`);
             fullText = fullText.replace(/Expiration Date:\s*$/, `Expiration Date: ${expirationDate}`);
+        }
+        // Add comments to existing fullText if not already included
+        if (event.extendedProps.licenseComments && !fullText.includes('Comments:')) {
+            fullText += `, Comments: ${event.extendedProps.licenseComments}`;
         }
     }
     
@@ -628,6 +637,12 @@ function showLicenseModal(event) {
                 <label class="block text-sm font-medium text-gray-700">Expiration Date</label>
                 <p class="mt-1 text-sm text-gray-900">${new Date(event.start).toLocaleDateString()}</p>
             </div>
+            ${props.licenseComments ? `
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Comments</label>
+                <p class="mt-1 text-sm text-gray-600">${props.licenseComments}</p>
+            </div>
+            ` : ''}
             ${props.fullText ? `
             <div>
                 <label class="block text-sm font-medium text-gray-700">Full Details</label>

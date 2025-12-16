@@ -1049,7 +1049,8 @@ app.get('/api/licenses', async (req, res) => {
                 LIC_TYPE,
                 LIC_NO,
                 EXPIRATION_DATE,
-                LIC_FULL_TEXT
+                LIC_FULL_TEXT,
+                LIC_COMMENTS
             FROM "${process.env.ORACLE_SCHEMA}"."LICENSES"
             WHERE EXPIRATION_DATE IS NOT NULL
             ORDER BY EXPIRATION_DATE`;
