@@ -210,26 +210,38 @@ async function loadLicenses(info, successCallback, failureCallback) {
         const result = await response.json();
 
         if (result.success) {
-            const licenses = result.data.map(license => ({
-                id: `license-${license.LIC_ID}`,
-                title: `🔒 License: ${license.LIC_NAME || license.LIC_TYPE}`,
-                start: license.EXPIRATION_DATE,
-                allDay: true,
-                backgroundColor: '#F59E0B', // Amber/orange color
-                borderColor: '#D97706',
-                textColor: '#FFFFFF',
-                classNames: ['license-event'],
-                extendedProps: {
-                    licenseId: license.LIC_ID,
-                    licenseName: license.LIC_NAME,
-                    licenseState: license.LIC_STATE,
-                    licenseType: license.LIC_TYPE,
-                    licenseNumber: license.LIC_NO,
-                    fullText: license.LIC_FULL_TEXT,
-                    editable: false,
-                    isLicense: true
+            const licenses = result.data.map(license => {
+                // Fix timezone issue: extract just the date part and use noon UTC
+                // This prevents the date from shifting to the previous day in US timezones
+                let startDate = license.EXPIRATION_DATE;
+                if (startDate) {
+                    // Extract YYYY-MM-DD from the date string (handles both ISO and date-only formats)
+                    const dateOnly = startDate.split('T')[0];
+                    // Use noon UTC to prevent timezone shifts from changing the calendar date
+                    startDate = dateOnly + 'T12:00:00.000Z';
                 }
-            }));
+                
+                return {
+                    id: `license-${license.LIC_ID}`,
+                    title: `🔒 License: ${license.LIC_NAME || license.LIC_TYPE}`,
+                    start: startDate,
+                    allDay: true,
+                    backgroundColor: '#F59E0B', // Amber/orange color
+                    borderColor: '#D97706',
+                    textColor: '#FFFFFF',
+                    classNames: ['license-event'],
+                    extendedProps: {
+                        licenseId: license.LIC_ID,
+                        licenseName: license.LIC_NAME,
+                        licenseState: license.LIC_STATE,
+                        licenseType: license.LIC_TYPE,
+                        licenseNumber: license.LIC_NO,
+                        fullText: license.LIC_FULL_TEXT,
+                        editable: false,
+                        isLicense: true
+                    }
+                };
+            });
 
             successCallback(licenses);
         } else {
