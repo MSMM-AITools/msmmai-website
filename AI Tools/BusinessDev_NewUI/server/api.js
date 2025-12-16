@@ -697,9 +697,16 @@ app.put('/api/proposals/:id', async (req, res) => {
 
         // Only include the columns that are in the UPDATE SET clause, plus id
         const binds = { id };
+        
+        // Fields that should be set to NULL when empty (allows clearing values)
+        const nullableStringFields = ['PRIME', 'SUB', 'STATUS', 'STAGE', 'DETAILS', 'MSMM_POC', 'EXTERNAL_POC', 'SELECTION_CHANCE'];
+        
         updateColumns.forEach(key => {
             // Convert empty strings to null for date fields
             if (dateColumns.includes(key) && data[key] === '') {
+                binds[key] = null;
+            // Convert empty strings to null for nullable string fields
+            } else if (nullableStringFields.includes(key) && data[key] === '') {
                 binds[key] = null;
             } else {
                 binds[key] = data[key];

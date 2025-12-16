@@ -1517,10 +1517,14 @@ async function saveEntry() {
         const formData = new FormData(form);
         const data = {};
 
+        // Fields that should be included even when empty (to allow clearing/nulling)
+        const nullableFields = ['PRIME', 'SUB', 'STATUS', 'STAGE', 'DETAILS', 'MSMM_POC', 'EXTERNAL_POC', 'SELECTION_CHANCE'];
+
         // Build data object from form
         for (const [key, value] of formData.entries()) {
-            // Skip empty values for optional fields, but keep empty strings for text fields
-            if (value !== '') {
+            // Include nullable fields even when empty (so they can be set to NULL)
+            // Skip other empty values
+            if (value !== '' || nullableFields.includes(key)) {
                 data[key] = value;
             }
         }
