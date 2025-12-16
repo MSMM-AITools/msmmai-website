@@ -269,7 +269,7 @@
             button.disabled = true;
             button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             
-            fetch(`/api/license/${licenseId}/toggle-emails`, {
+            fetch(`/licenseremindertool/api/license/${licenseId}/toggle-emails`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

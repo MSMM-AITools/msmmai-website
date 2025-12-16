@@ -340,7 +340,7 @@
         showLoader('Loading license data...');
         
         // Fetch license details
-        fetch(`/api/license/${licenseId}`)
+        fetch(`/licenseremindertool/api/license/${licenseId}`)
             .then(response => response.json())
             .then(data => {
                 hideLoader();
@@ -421,7 +421,7 @@
         });
 
         const isUpdate = licenseId && licenseId.trim() !== '';
-        const url = isUpdate ? `/api/license/${licenseId}` : '/api/license';
+        const url = isUpdate ? `/licenseremindertool/api/license/${licenseId}` : '/licenseremindertool/api/license';
         const method = isUpdate ? 'PUT' : 'POST';
         
         // Show loader with appropriate message
@@ -499,7 +499,7 @@
         if (confirm('Are you sure you want to delete this license?')) {
             showLoader('Deleting license...');
             
-            fetch(`/api/license/${licenseId}`, {
+            fetch(`/licenseremindertool/api/license/${licenseId}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
@@ -521,7 +521,7 @@
     }
 
     function loadLicenseTypes() {
-        fetch('/api/license-types')
+        fetch('/licenseremindertool/api/license-types')
             .then(response => response.json())
             .then(data => {
                 const select = document.getElementById('editLicenseType');
