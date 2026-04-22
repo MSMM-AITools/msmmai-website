@@ -92,7 +92,7 @@ def extract_and_generate_quotes(documents_text):
         """
         
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are an expert at extracting and formatting professional quotes from business correspondence. You maintain the original sentiment while ensuring professional language."},
                 {"role": "user", "content": prompt}
@@ -165,7 +165,7 @@ def generate_brief_description(documents_text, max_words, num_paragraphs, paragr
         client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
         
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are a professional technical writer specializing in civil engineering project descriptions. You excel at creating comprehensive, accurate, and engaging project summaries based on technical documents and project specifications."},
                 {"role": "user", "content": prompt}

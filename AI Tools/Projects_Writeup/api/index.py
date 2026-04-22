@@ -326,7 +326,7 @@ def generate_brief_description(documents_text, max_words, num_paragraphs, paragr
         )
         
         response = client.chat.completions.create(
-            model="gpt-4-turbo-preview",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are a professional business writer who specializes in creating project descriptions for engineering firms. You write clear, detailed, and professional content for business portfolios and client presentations. You always complete the writing tasks as requested."},
                 {"role": "user", "content": prompt}
