@@ -58,6 +58,9 @@ if not project_path:
 sys.path.insert(0, str(project_path))
 print(f"[ProjectWriteup Init] Python path after insert: {sys.path[:3]}", file=sys.stderr)
 
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from werkzeug.exceptions import NotFound
+
 try:
     print("[ProjectWriteup Init] Importing dotenv...", file=sys.stderr)
     from dotenv import load_dotenv
@@ -82,17 +85,6 @@ try:
     from api.index import app as flask_app
     print("[ProjectWriteup Init] Successfully imported Flask app", file=sys.stderr)
 
-    # Wrap Flask app to handle /project-writeup prefix
-    from werkzeug.middleware.dispatcher import DispatcherMiddleware
-    from werkzeug.exceptions import NotFound
-
-    # Create a middleware that strips the /project-writeup prefix
-    app = DispatcherMiddleware(
-        NotFound(),  # Default app (404)
-        {'/project-writeup': flask_app}  # Mount Flask app at /project-writeup
-    )
-    print("[ProjectWriteup Init] App wrapped with DispatcherMiddleware for path handling", file=sys.stderr)
-
 except Exception as e:
     print(f"[ProjectWriteup ERROR] ERROR IMPORTING FLASK APP: {type(e).__name__}: {str(e)}", file=sys.stderr)
     print(f"[ProjectWriteup ERROR] Full traceback:", file=sys.stderr)
@@ -106,3 +98,8 @@ except Exception as e:
         masked = value[:3] + '***' if value and len(value) > 3 else 'NOT_SET'
         print(f"[ProjectWriteup ERROR]   {key}: {masked}", file=sys.stderr)
     raise
+
+# Mount Flask app under /project-writeup prefix. Kept at module top level
+# so Vercel's Python runtime detects `app` as the WSGI entry point.
+app = DispatcherMiddleware(NotFound(), {'/project-writeup': flask_app})
+print("[ProjectWriteup Init] App wrapped with DispatcherMiddleware for path handling", file=sys.stderr)
